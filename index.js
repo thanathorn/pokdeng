@@ -1,3 +1,5 @@
+const readlineSync = require('readline-sync');
+
 class Person {
     constructor(type) {
         this.inWallet = 0;
@@ -13,6 +15,10 @@ class Person {
 
     getBet() {
         return this.onTable;
+    }
+
+    getWallet() {
+        return this.inWallet;
     }
 
     addCards(cards) {
@@ -38,11 +44,17 @@ class Person {
     }
 
     win() {
-        this.inWallet += this.onTable*2;
+        this.inWallet += (this.onTable*2);
     }
 
     lose() {
-        this.inWallet -= this.onTable;
+        if(this.inWallet - this.onTable >= 0)
+        {
+            this.inWallet -= this.onTable;
+        }
+        else {
+            this.inWallet = 0;
+        }
     }
 }
 
@@ -110,32 +122,41 @@ class Card{
 }
 
 async function main() {
+    let playMore = "Yes";
+
     me = new Person("me");
     dealer = new Person("dealer");
 
-    me.bet(5)
-
-    let dealerShuffle = dealer.shuffle(4)
-    me.addCards(dealerShuffle.slice(0,2))
-    dealer.addCards(dealerShuffle.slice(2,4))
-
-    let myScore = me.getScore()
-    let dealerScore = dealer.getScore()
-
-    console.log(`You got ${me.cards[0].getType()}-${me.cards[0].getFace()}, ${me.cards[1].getType()}-${me.cards[1].getFace()}`)
-    console.log(`The dealer got ${dealer.cards[0].getType()}-${dealer.cards[0].getFace()}, ${dealer.cards[1].getType()}-${dealer.cards[1].getFace()}`)
+    while(playMore === "Yes")
+    {
+        let bet = userName = readlineSync.question('> Please put your bet\n> ');
+        me.bet(bet)
     
-    if(myScore > dealerScore) {
-        console.log(`You won!!, received ${me.getBet()} chips`)
-        me.win();
+        let dealerShuffle = dealer.shuffle(4)
+        me.addCards(dealerShuffle.slice(0,2))
+        dealer.addCards(dealerShuffle.slice(2,4))
+    
+        let myScore = me.getScore()
+        let dealerScore = dealer.getScore()
+    
+        console.log(`> You got ${me.cards[0].getType()}-${me.cards[0].getFace()}, ${me.cards[1].getType()}-${me.cards[1].getFace()}`)
+        console.log(`> The dealer got ${dealer.cards[0].getType()}-${dealer.cards[0].getFace()}, ${dealer.cards[1].getType()}-${dealer.cards[1].getFace()}`)
+        
+        if(myScore > dealerScore) {
+            console.log(`> You won!!!, received ${me.getBet()} chips`)
+            me.win();
+        }
+        else if (myScore < dealerScore) {
+            console.log(`> You lose!!!, lost ${me.getBet()} chips`)
+            me.lose();
+        }
+        else {
+            console.log(`> You tie!!!, received nothing`)
+        }
+    
+        playMore = readlineSync.question('> Wanna play more (Yes/No)?\n> ');
     }
-    else if (myScore < dealerScore) {
-        console.log(`You lose!!, lost ${me.getBet()} chips`)
-        me.lose();
-    }
-    else {
-        console.log(`You tie!!, received nothing`)
-    }
+    console.log(`> You got total ${me.getWallet()}`)
 }
 
-main()
+main();
