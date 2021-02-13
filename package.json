@@ -1,0 +1,12 @@
+{
+  "name": "pockdeng",
+  "version": "1.0.0",
+  "description": "Skooldio Backend Homework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Thanathorn Singthong",
+  "license": "ISC"
+}
